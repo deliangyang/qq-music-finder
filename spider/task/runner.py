@@ -17,7 +17,6 @@ class Runner(threading.Thread):
 
     def run(self) -> None:
         logger.info('start query data')
-
         queue_thread = threading.Thread(target=self.read_data)
         queue_thread.start()
 

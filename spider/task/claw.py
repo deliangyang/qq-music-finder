@@ -20,7 +20,7 @@ class ClawThread(threading.Thread):
     @classmethod
     def get_keywords(cls, data: {}):
         singers = [data['singer'], data['singer1'], data['singer2']]
-        singers = list(filter(lambda x: len(x) > 0, singers))
+        singers = list(filter(lambda x: len(str(x)) > 0, singers))
         if len(singers) == 2:
             yield ' '.join([data['beat_name'], singers[0], singers[1]])
             yield ' '.join([data['beat_name'], singers[1], singers[0]])
@@ -41,7 +41,11 @@ class ClawThread(threading.Thread):
         result = self.__init_data(data)
         try:
             for keyword in self.get_keywords(data):
-                logger.info('keyword %s', keyword)
+                logger.info({
+                    'thread': self.thread_name,
+                    'keyword': keyword,
+                    'beat_id': data['beat_id'],
+                })
                 count = 0
                 for items in search(keyword):
                     mid, music_id, ok = compare(items, data)
