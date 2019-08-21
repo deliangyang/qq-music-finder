@@ -7,10 +7,10 @@ from queue import Queue
 
 class Runner(threading.Thread):
 
-    def __init__(self, filename: str, start: int):
+    def __init__(self, filename: str, start: int = 0, thread_num: int = 3):
         threading.Thread.__init__(self)
         self.filename = filename
-        self.step = 3
+        self.thread_num = thread_num
         self.container = []
         self.reader = ReadData(self.filename, start)
         self.queue = Queue(maxsize=10000)
@@ -21,7 +21,7 @@ class Runner(threading.Thread):
         queue_thread.start()
 
         threads = []
-        for i in range(self.step):
+        for i in range(self.thread_num):
             thread_name = 'thread-%d' % i
             claw_thread = ClawThread(thread_name, self.queue, self.container, self.callback)
             claw_thread.start()
