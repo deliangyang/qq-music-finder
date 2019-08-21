@@ -33,7 +33,11 @@ def query_lyric(mid: str, music_id: int) -> {}:
         headers=headers)
     logger.debug('url: %s' % req.url)
     content = req.json()
-    result = find_content(content['lyric'])
+    logger.debug(content)
+    lyric = ''
+    if 'lyric' in content:
+        lyric = content['lyric']
+    result = find_content(lyric)
     return result
 
 

@@ -14,8 +14,8 @@ class ReadData(object):
             record = self.worksheet.row_values(i)
             yield {
                 'beat_id': int(record[0]),
-                'beat_name': record[1],
-                'singer': record[2],
-                'singer1': record[3],
-                'singer2': record[4],
+                'beat_name': str(record[1]).replace('.0', ''),
+                'singer': str(record[2]).replace('.0', ''),
+                'singer1': str(record[3]).replace('.0', ''),
+                'singer2': str(record[4]).replace('.0', ''),
             }

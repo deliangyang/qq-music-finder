@@ -13,8 +13,8 @@ def query_info(mid: str) -> {}:
     :return:
     """
     resp = requests.get('https://y.qq.com/n/yqq/song/%s.html' % mid, headers=headers)
-    content = resp.content.decode('utf-8')
-    result = re_info.findall(content)
+    _content = resp.content.decode('utf-8')
+    result = re_info.findall(_content)
     logger.debug(result)
     data = {
         'company': '',
@@ -23,7 +23,8 @@ def query_info(mid: str) -> {}:
         'pub_time': '',
         'message': '',
     }
-    if len(data) <= 0:
+    if len(result) <= 0:
+        logger.debug(_content)
         return data
     content = json.loads(result[0])
     for key in data:
@@ -33,11 +34,11 @@ def query_info(mid: str) -> {}:
                     data[key] += '#'
                 data[key] += datum['value']
 
-    song_data = re_song_data.findall(result[0])
+    song_data = re_song_data.findall(_content)
     logger.debug(song_data)
     if len(song_data) <= 0:
         return data
-    song_data = json.load(song_data[0])
+    song_data = json.loads(song_data[0])
     if 'disabled' in song_data and song_data['disabled'] == 1:
         data['message'] = ERROR_MESSAGE_OFF_LINE
     return data

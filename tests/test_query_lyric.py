@@ -35,3 +35,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(mid, '004IUrvw1Sm2Mp')
         self.assertEqual(music_id, 4929707)
         self.assertEqual(ok, True)
+
+    def test_query_info(self):
+        info = query_info('003UFZ1f0YQdoh')
+        print(info)

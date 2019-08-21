@@ -1,3 +1,5 @@
+import traceback
+
 
 ERROR_MESSAGE_OFF_LINE = 'QQ音乐已下架'
 ERROR_MESSAGE_NOT_FOUND = 'QQ音乐搜索不到该伴奏'
@@ -13,6 +15,7 @@ class ErrorForbidden(Exception):
 
 
 def with_error_stack(e):
+    print(traceback.format_exc())
     return {
         'error': e,
         'file': e.__traceback__.tb_frame.f_globals['__file__'],
