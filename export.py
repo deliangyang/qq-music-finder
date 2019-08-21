@@ -8,10 +8,10 @@ def parse_data(data: str) -> str:
     return '#'.join(items).strip()
 
 
-def parse_content(content: str) -> str:
+def parse_content(ct: str) -> str:
     count = 0
     _content = ''
-    for s in content:
+    for s in ct:
         if s == '\"' and count > 0:
             count -= 1
         elif s == '\"':
@@ -47,10 +47,10 @@ def parse_cols(ct: {}) -> (list, bool):
         record['singer2'],
         company, genre, lan, pub_time, lyric, song, arranging, message,
     ]
-    has_fail = False
+    _has_fail = False
     if len(company) <= 0 and len(genre) <= 0 and len(lan) <= 0 and len(pub_time) <= 0:
-        has_fail = True
-    return _cols, has_fail
+        _has_fail = True
+    return _cols, _has_fail
 
 
 if __name__ == '__main__':
