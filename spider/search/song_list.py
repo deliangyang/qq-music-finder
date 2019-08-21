@@ -58,26 +58,26 @@ def search(keyword) -> iter:
         yield data
 
 
-def compare(info: {}, data: {}) -> (str, int, bool):
+def compare(search_src: {}, origin: {}) -> (str, int, bool):
     """
     比较搜索结果
-    :param info: 搜索结构的数据
-    :param data: 输入数据，excel
-    :return:
+    :param search_src: 搜索结构的数据
+    :param origin: 输入数据，excel
+    :return: (str, int, bool)
     """
     logger.debug({
-        'info': info,
-        'data': data,
+        'search_src': search_src,
+        'origin': origin,
     })
-    data_singers = [data['singer'], data['singer1'], data['singer2']]
-    data_singers = list(filter(lambda x: len(x) > 0, data_singers))
-    if info['name'] == data['beat_name']:
+    origin_singers = [origin['singer'], origin['singer1'], origin['singer2']]
+    origin_singers = list(filter(lambda x: len(x) > 0, origin_singers))
+    if search_src['name'] == origin['beat_name']:
         count = 0
-        for singer in data_singers:
-            for s in info['singer']:
+        for singer in origin_singers:
+            for s in search_src['singer']:
                 if singer == s:
                     count += 1
-        if count > 0 and count == len(info['singer']):
-            return info['mid'], info['music_id'], True
+        if count > 0 and count == len(search_src['singer']):
+            return search_src['mid'], search_src['music_id'], True
     return None, 0, False
 
