@@ -1,7 +1,7 @@
 import traceback
 
 
-ERROR_MESSAGE_OFF_LINE = 'QQ音乐已下架'
+ERROR_MESSAGE_OFF_LINE = '因QQ音乐无版权下架'
 ERROR_MESSAGE_NOT_FOUND = 'QQ音乐搜索不到该伴奏'
 ERROR_MESSAGE_FORBIDDEN = '歌名歌手错误或禁歌下架'
 ERROR_MESSAGE_NOT_COMPANY_INFO = 'QQ音乐无唱片公司信息'
