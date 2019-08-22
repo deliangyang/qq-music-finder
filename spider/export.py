@@ -27,8 +27,9 @@ class Export(object):
                         if 'record' in content:
                             cols, _has_fail = self.parse_cols(content)
                             if not _has_fail:
-                                total += 1
-                                work_sheet.append(cols)
+                                pass
+                            total += 1
+                            work_sheet.append(cols)
                     except Exception as e:
                         raise e
             workbook.save(filename)
@@ -85,11 +86,14 @@ class Export(object):
         arranging = self.parse_data(record['arranging'])
         message = self.parse_data(record['message'])
 
-        if message == 'QQ音乐无唱片公司信息#QQ音乐已下架' \
-                or message == 'QQ音乐无唱片公司信息#因QQ音乐无版权下架' \
-                or message == 'QQ音乐已下架#QQ音乐无唱片公司信息':
-            message = '因QQ音乐无版权下架'
-
+        messages = ['因QQ音乐无版权下架', '歌名歌手错误或禁歌下架', 'QQ音乐无唱片公司信息',
+                    'QQ音乐搜索不到该伴奏', '未知异常，待分析']
+        msg = message.split('#')
+        if len(msg) > 1:
+            for mg in messages:
+                if mg in msg:
+                    message = mg
+                    break
         _cols = [
             record['beat_id'],
             record['beat_name'],

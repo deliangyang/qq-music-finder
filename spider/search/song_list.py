@@ -79,14 +79,15 @@ def compare(search_src: {}, origin: {}) -> (str, int, bool):
         'origin': origin,
     })
     origin_singers = [origin['singer'], origin['singer1'], origin['singer2']]
-    origin_singers = list(filter(lambda x: len(x) > 0, origin_singers))
-    if search_src['name'] == origin['beat_name']:
+    origin_singers = list(map(lambda x: str(x).lower().strip(), filter(lambda x: len(x) > 0, origin_singers)))
+    search_src['singer'] = list(map(lambda x: str(x).lower().strip(), search_src['singer']))
+    if str(search_src['name']).replace(' ', '') == str(origin['beat_name']).replace(' ', ''):
         count = 0
         for singer in origin_singers:
             for s in search_src['singer']:
                 if singer == s:
                     count += 1
-        if count > 0 and count == len(search_src['singer']):
+        if count > 0 and count == len(origin_singers):
             return search_src['mid'], search_src['music_id'], True
     return None, 0, False
 

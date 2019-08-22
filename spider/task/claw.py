@@ -9,11 +9,10 @@ from spider.error import *
 
 class ClawThread(threading.Thread):
 
-    def __init__(self, thread_name: str, queue: Queue, container: [], callback):
+    def __init__(self, thread_name: str, queue: Queue, callback):
         threading.Thread.__init__(self)
         self.queue = queue
         self.thread_name = thread_name
-        self.container = container
         self.callback = callback
 
     def run(self) -> None:

@@ -1,5 +1,6 @@
 import os
 import threading
+from spider.task.claw import ClawThread
 from spider.error import with_error_stack
 from spider.utils.logger import logger
 from spider.read_data import ReadData
@@ -21,21 +22,21 @@ class Runner(threading.Thread):
 
     def run(self) -> None:
         try:
-            # self.reader = ReadData(self.filename, self.start)
-            # self.print_message('start query data')
-            # queue_thread = threading.Thread(target=self.read_data)
-            # queue_thread.start()
-            #
-            # threads = []
-            # for i in range(self.thread_num):
-            #     thread_name = 'thread-%d' % i
-            #     claw_thread = ClawThread(thread_name, self.queue, self.container, self.callback)
-            #     claw_thread.start()
-            #     threads.append(claw_thread)
-            #
-            # queue_thread.join()
-            # for thread in threads:
-            #     thread.join()
+            self.reader = ReadData(self.filename, self.start_id)
+            self.print_message('start query data')
+            queue_thread = threading.Thread(target=self.read_data)
+            queue_thread.start()
+
+            threads = []
+            for i in range(self.thread_num):
+                thread_name = 'thread-%d' % i
+                claw_thread = ClawThread(thread_name, self.queue, self.callback)
+                claw_thread.start()
+                threads.append(claw_thread)
+
+            queue_thread.join()
+            for thread in threads:
+                thread.join()
 
             self.print_message("处理完毕，开始导出数据，请等待...")
 

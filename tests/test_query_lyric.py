@@ -24,11 +24,11 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['lan'], '国语')
 
     def test_search(self):
-        result = search('爱在公元前 周杰伦')
+        result = search('草原夜歌 陈水林 洪禄云')
         d = {
-            'beat_name': '爱在公元前',
-            'singer': '周杰伦',
-            'singer1': '',
+            'beat_name': '草原夜歌',
+            'singer': '陈水林',
+            'singer1': '洪禄云',
             'singer2': '',
         }
         print(result)
@@ -37,10 +37,10 @@ class TestCase(unittest.TestCase):
             print(t)
 
     def test_search2(self):
-        result = search('惩罚 孙楠')
+        result = search('我的心太乱 周传雄')
         d = {
-            'beat_name': '惩罚',
-            'singer': '孙楠',
+            'beat_name': '我的心太乱',
+            'singer': '周传雄',
             'singer1': '',
             'singer2': '',
         }
