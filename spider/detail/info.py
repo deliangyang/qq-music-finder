@@ -35,9 +35,9 @@ def query_info(mid: str) -> {}:
                 data[key] += datum['value']
 
     song_data = re_song_data.findall(_content)
-    logger.debug(song_data)
     if len(song_data) <= 0:
         return data
+    logger.debug(song_data)
     song_data = json.loads(song_data[0])
     if 'disabled' in song_data and song_data['disabled'] == 1:
         data['message'] = ERROR_MESSAGE_OFF_LINE

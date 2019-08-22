@@ -9,7 +9,6 @@ logging.basicConfig(
 
 _format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-
 debug = logging.FileHandler('query.debug.log', encoding='utf-8')
 debug.setLevel(logging.DEBUG)
 debug.setFormatter(_format)

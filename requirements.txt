@@ -1,3 +1,7 @@
 requests
 xlrd
 xlwt
+openpyxl
+pybloom_live
+wxPython
+PyInstaller

@@ -24,7 +24,30 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['lan'], '国语')
 
     def test_search(self):
-        search('出山 花粥')
+        result = search('爱在公元前 周杰伦')
+        d = {
+            'beat_name': '爱在公元前',
+            'singer': '周杰伦',
+            'singer1': '',
+            'singer2': '',
+        }
+        print(result)
+        for res in result:
+            t = compare(res, d)
+            print(t)
+
+    def test_search2(self):
+        result = search('惩罚 孙楠')
+        d = {
+            'beat_name': '惩罚',
+            'singer': '孙楠',
+            'singer1': '',
+            'singer2': '',
+        }
+        print(result)
+        for res in result:
+            t = compare(res, d)
+            print(t)
 
     def test_compare(self):
         info = {
@@ -37,5 +60,5 @@ class TestCase(unittest.TestCase):
         self.assertEqual(ok, True)
 
     def test_query_info(self):
-        info = query_info('003UFZ1f0YQdoh')
+        info = query_info('001rvKQX16P0mO')
         print(info)

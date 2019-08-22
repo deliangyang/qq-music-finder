@@ -1,14 +1,15 @@
 import requests
 from spider.header import headers
 from spider.utils.logger import logger
-
+from urllib.parse import urlencode
+from spider.error import with_error_stack
 
 params = {
     'ct': 24,
     'qqmusic_ver': 1298,
     'new_json': 1,
     'remoteplace': 'txt.yqq.center',
-    'searchid': '41528322314210299',
+    'searchid': '52946548694911179',
     't': 0,
     'aggr': 1,
     'cr': 1,
@@ -35,7 +36,7 @@ def get_params(keyword: str) -> {}:
     return params
 
 
-def search(keyword) -> iter:
+def search(keyword) -> list:
     """
     查询 歌名和歌手相关信息
     :param keyword:
@@ -43,9 +44,15 @@ def search(keyword) -> iter:
     """
     resp = requests.get(
         url='https://c.y.qq.com/soso/fcgi-bin/client_search_cp',
-        params=get_params(keyword),
+        params=urlencode(get_params(keyword)),
         headers=headers)
-    content = resp.json()
+    try:
+        content = resp.json()
+    except Exception as e:
+        logger.error(with_error_stack(e))
+        logger.debug("keyword: %s, content: %", resp.content.decode('utf-8'))
+        return []
+    result = []
     for item in content['data']['song']['list']:
         data = {
             'name': item['name'],
@@ -55,7 +62,9 @@ def search(keyword) -> iter:
         }
         for singer in item['singer']:
             data['singer'].append(singer['name'])
-        yield data
+        result.append(data)
+    logger.debug(result)
+    return result
 
 
 def compare(search_src: {}, origin: {}) -> (str, int, bool):

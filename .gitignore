@@ -4,4 +4,4 @@ test.py
 **/*.pyc
 __pycache__
 **/*.log
-*.xls
+*.xls*

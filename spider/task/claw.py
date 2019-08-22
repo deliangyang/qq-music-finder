@@ -1,7 +1,6 @@
 import threading
 from queue import Queue
 from spider.utils.logger import logger
-from spider.error import with_error_stack
 from spider.detail.info import query_info
 from spider.detail.lyric import query_lyric
 from spider.search.song_list import search, compare
