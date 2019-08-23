@@ -4,7 +4,6 @@ import datetime
 from spider.task.runner import Runner
 from spider.utils.logger import logger
 from spider.error import with_error_stack
-import traceback
 
 
 class MainPanel(wx.Panel):
@@ -82,15 +81,23 @@ class MainPanel(wx.Panel):
             os.makedirs(dirname)
         return os.path.join(
             dirname,
-            (str(datetime.datetime.now()) + '.xls').replace(' ', '-').replace(':', '')
+            (str(datetime.datetime.now()) + '.xlsx').replace(' ', '-').replace(':', '')
         )
 
     def after_parse(self, message):
         self.btn.Enable()
+
+        if message == 'exist':
+            dlg = wx.MessageDialog(None, '处理关闭，软件即将退出', '信息', wx.YES_NO)
+            if dlg.ShowModal() == wx.ID_YES:
+                pass
+            dlg.Destroy()
+            wx.Exit()
+
         try:
-            # thread_num = int(self.text_thread_num.GetValue()) or 3
-            # beat_id = int(self.text_beat_id.GetValue()) or 0
-            # self.status_bar.SetStatusText(u"开始ID %d, 线程数: %d" % (beat_id, thread_num), 0)
+            thread_num = int(self.text_thread_num.GetValue()) or 3
+            beat_id = int(self.text_beat_id.GetValue()) or 0
+            self.status_bar.SetStatusText(u"开始ID %d, 线程数: %d" % (beat_id, thread_num), 0)
             self.status_bar.SetStatusText(message, 1)
         except Exception as e:
             logger.error(with_error_stack(e))

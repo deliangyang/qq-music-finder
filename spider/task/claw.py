@@ -27,28 +27,22 @@ class ClawThread(threading.Thread):
     def start_deal_with(self, data: {}):
         result = self.__init_data(data)
         try:
-            for keyword in self.get_keywords(data):
+            for index, infos in enumerate(self.get_keywords(data)):
+                keyword = ' '.join(infos)
                 logger.info({
                     'thread': self.thread_name,
                     'keyword': keyword,
                     'beat_id': data['beat_id'],
                 })
-                count = 0
                 search_result, ok = search(keyword)
                 if not ok:
                     result = self.update_message(result, ERROR_MESSAGE_FORBIDDEN)
                     continue
+                count = 0
                 for items in search_result:
-                    mid, music_id, ok = compare(items, data)
-                    logger.debug({
-                        'mid': mid,
-                        'music_id': music_id,
-                        'ok': ok,
-                    })
+                    mid, music_id, ok = compare(items, self.parse_singer(infos), index)
                     if not ok:
                         continue
-                    logger.info(items)
-
                     try:
                         for k, v in query_info(mid).items():
                             if k in result and len(result[k]) > 0:
@@ -79,7 +73,6 @@ class ClawThread(threading.Thread):
                 'message': 'ERROR_MESSAGE_UNKNOWN',
                 'result': result,
             })
-            print(self.get_keywords(data))
         finally:
             logger.info({
                 'target': 'records',
@@ -95,6 +88,32 @@ class ClawThread(threading.Thread):
             result['message'] += '#'
         result['message'] += message
         return result
+
+    @classmethod
+    def get_keywords(cls, data: {}) -> list:
+        singers = [data['singer'], data['singer1'], data['singer2']]
+        result = []
+        try:
+            singers = list(filter(lambda x: x and len(x) > 0, singers))
+            if len(singers) == 2:
+                result = [
+                    [data['beat_name'], singers[0], singers[1]],
+                    [data['beat_name'], singers[1], singers[0]],
+                ]
+            else:
+                singers.insert(0, data['beat_name'])
+                result = [singers]
+        except Exception as e:
+            print(e, singers, data)
+        return result
+
+    @classmethod
+    def parse_singer(cls, data: list):
+        beat_name = data.pop()
+        return {
+            'beat_name': str(beat_name).replace(' ').strip(),
+            'singer': data,
+        }
 
     @classmethod
     def __init_data(cls, data: {}):
@@ -113,17 +132,3 @@ class ClawThread(threading.Thread):
             'arranging': '',
             'message': '',
         }
-
-    @classmethod
-    def get_keywords(cls, data: {}):
-        singers = [data['singer'], data['singer1'], data['singer2']]
-        try:
-            singers = list(filter(lambda x: x and len(x) > 0, singers))
-            if len(singers) == 2:
-                yield ' '.join([data['beat_name'], singers[0], singers[1]])
-                yield ' '.join([data['beat_name'], singers[1], singers[0]])
-            else:
-                singers.insert(0, data['beat_name'])
-                yield ' '.join(singers)
-        except Exception as e:
-            print(e, singers, data)

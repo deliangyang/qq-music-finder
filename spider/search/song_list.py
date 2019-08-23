@@ -77,27 +77,50 @@ def search(keyword) -> (list, bool):
     return result, True
 
 
-def compare(search_src: {}, origin: {}) -> (str, int, bool):
+def compare(search_src: {}, origin: {}, times: int) -> (str, int, bool):
     """
     比较搜索结果
     :param search_src: 搜索结构的数据
     :param origin: 输入数据，excel
+    :param times: 次数，excel
     :return: (str, int, bool)
     """
     logger.debug({
         'search_src': search_src,
         'origin': origin,
     })
-    origin_singers = [origin['singer'], origin['singer1'], origin['singer2']]
-    origin_singers = list(map(lambda x: str(x).lower().strip(), filter(lambda x: len(x) > 0, origin_singers)))
+
+    origin_singers = origin['singer']
+    origin_singers = list(
+        map(lambda x: str(x).lower().strip(),
+            filter(lambda x: len(x) > 0, origin_singers)))
+
     search_src['singer'] = list(map(lambda x: str(x).lower().strip(), search_src['singer']))
     if str(search_src['name']).replace(' ', '').lower() == str(origin['beat_name']).replace(' ', ''):
+        if len(origin_singers) == 2:
+            if times % 2 == 1:
+                origin_singers[1], origin_singers[0] = origin_singers[0], origin_singers[1]
+        if _compare(origin_singers, search_src['singer']):
+            return search_src['mid'], search_src['music_id'], True, search_src['singer']
+    return None, 0, False
+
+
+def _compare(origin_singers: list, search_singers: list) -> bool:
+    if len(origin_singers) == 1:
+        if len(search_singers) == 1 and origin_singers[0] == search_singers[0]:
+            return True
+    elif len(origin_singers) == 2:
+        if len(search_singers) == 2:
+            if origin_singers[0] == search_singers[0] and origin_singers[1] == search_singers[1]:
+                return True
+        else:
+            return False
+    else:
         count = 0
         for singer in origin_singers:
-            for s in search_src['singer']:
+            for s in search_singers:
                 if singer == s:
                     count += 1
         if count > 0 and count == len(origin_singers):
-            return search_src['mid'], search_src['music_id'], True
-    return None, 0, False
-
+            return True
+    return False

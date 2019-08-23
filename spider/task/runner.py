@@ -47,6 +47,7 @@ class Runner(threading.Thread):
         except Exception as e:
             self.print_message('处理失败: %s' % e)
             logger.error(with_error_stack(e))
+        self.print_message('exist')
 
     def read_data(self):
         for data in self.reader.iter():

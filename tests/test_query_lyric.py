@@ -25,16 +25,29 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['lan'], '国语')
 
     def test_search(self):
-        result = search('дорогой длинною 袁广泉')
+        result, _ = search('屋顶 周杰伦 温岚')
         d = {
-            'beat_name': 'дорогой длинною',
-            'singer': '袁广泉',
-            'singer1': '',
+            'beat_name': '屋顶',
+            'singer': '周杰伦',
+            'singer1': '温岚',
             'singer2': '',
         }
         print(result)
-        for res in result:
-            t = compare(res, d)
+        for i, res in enumerate(result):
+            t = compare(res, d, 0)
+            print(t)
+
+    def test_search23(self):
+        result, _ = search('屋顶 温岚 周杰伦')
+        d = {
+            'beat_name': '屋顶',
+            'singer': '温岚',
+            'singer1': '周杰伦',
+            'singer2': '',
+        }
+        print(result)
+        for i, res in enumerate(result):
+            t = compare(res, d, 1)
             print(t)
 
     def test_search2(self):
