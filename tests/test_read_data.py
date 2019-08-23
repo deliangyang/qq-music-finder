@@ -1,6 +1,7 @@
 import unittest
 from spider.read_data import ReadData
 from spider.export import Export
+from spider.reg import replace
 
 
 class ReadDataTestCase(unittest.TestCase):
@@ -21,3 +22,6 @@ class ReadDataTestCase(unittest.TestCase):
                              " 'arranging': "
                              "'', 'message': 'QQ音乐搜索不到该伴奏'}}")
         print(res)
+
+    def test_replace(self):
+        print(replace('星星 i\'m not a star'))

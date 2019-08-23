@@ -1,9 +1,8 @@
 import threading
 from queue import Queue
-from spider.utils.logger import logger
 from spider.detail.info import query_info
 from spider.detail.lyric import query_lyric
-from spider.search.song_list import search, compare
+from spider.search.song_list import *
 from spider.error import *
 
 
@@ -27,7 +26,7 @@ class ClawThread(threading.Thread):
     def start_deal_with(self, data: {}):
         result = self.__init_data(data)
         try:
-            for index, infos in enumerate(self.get_keywords(data)):
+            for infos in get_keywords(data):
                 keyword = ' '.join(infos)
                 logger.info({
                     'thread': self.thread_name,
@@ -40,7 +39,7 @@ class ClawThread(threading.Thread):
                     continue
                 count = 0
                 for items in search_result:
-                    mid, music_id, ok = compare(items, self.parse_singer(infos), index)
+                    mid, music_id, ok = compare(items, parse_singer(infos))
                     if not ok:
                         continue
                     try:
@@ -88,32 +87,6 @@ class ClawThread(threading.Thread):
             result['message'] += '#'
         result['message'] += message
         return result
-
-    @classmethod
-    def get_keywords(cls, data: {}) -> list:
-        singers = [data['singer'], data['singer1'], data['singer2']]
-        result = []
-        try:
-            singers = list(filter(lambda x: x and len(x) > 0, singers))
-            if len(singers) == 2:
-                result = [
-                    [data['beat_name'], singers[0], singers[1]],
-                    [data['beat_name'], singers[1], singers[0]],
-                ]
-            else:
-                singers.insert(0, data['beat_name'])
-                result = [singers]
-        except Exception as e:
-            print(e, singers, data)
-        return result
-
-    @classmethod
-    def parse_singer(cls, data: list):
-        beat_name = data.pop()
-        return {
-            'beat_name': str(beat_name).replace(' ').strip(),
-            'singer': data,
-        }
 
     @classmethod
     def __init_data(cls, data: {}):

@@ -1,10 +1,10 @@
 import requests
-import json
 from spider.header import headers
 from spider.utils.logger import logger
 from urllib.parse import urlencode
 from spider.error import with_error_stack
-from spider.error import ERROR_MESSAGE_FORBIDDEN
+from spider.reg import replace_tag
+
 
 params = {
     'ct': 24,
@@ -58,7 +58,6 @@ def search(keyword) -> (list, bool):
 
     if 'message' in content and content['message'] == 'query forbid':
         return [], False
-
     try:
         for item in content['data']['song']['list']:
             data = {
@@ -77,44 +76,40 @@ def search(keyword) -> (list, bool):
     return result, True
 
 
-def compare(search_src: {}, origin: {}, times: int) -> (str, int, bool):
+def compare(search_src: {}, origin: {}) -> (str, int, bool):
     """
     比较搜索结果
-    :param search_src: 搜索结构的数据
-    :param origin: 输入数据，excel
-    :param times: 次数，excel
+    :param search_src: 搜索结构的数据 { name: 'xx', singer: [] }
+    :param origin: 输入数据，excel { beat_name: 'xx', singer: [] }
     :return: (str, int, bool)
     """
     logger.debug({
         'search_src': search_src,
         'origin': origin,
     })
-
-    origin_singers = origin['singer']
-    origin_singers = list(
-        map(lambda x: str(x).lower().strip(),
-            filter(lambda x: len(x) > 0, origin_singers)))
-
-    search_src['singer'] = list(map(lambda x: str(x).lower().strip(), search_src['singer']))
-    if str(search_src['name']).replace(' ', '').lower() == str(origin['beat_name']).replace(' ', ''):
-        if len(origin_singers) == 2:
-            if times % 2 == 1:
-                origin_singers[1], origin_singers[0] = origin_singers[0], origin_singers[1]
-        if _compare(origin_singers, search_src['singer']):
-            return search_src['mid'], search_src['music_id'], True, search_src['singer']
+    origin['singer'] = list(map(replace_tag, origin['singer']))
+    search_src['singer'] = list(map(replace_tag, search_src['singer']))
+    search_name = replace_tag(search_src['name'])
+    beat_name = replace_tag(origin['beat_name'])
+    logger.error({
+        'type': 'name',
+        'origin': beat_name,
+        'search': search_name,
+    })
+    if search_name == beat_name:
+        if _compare_singer(origin['singer'], search_src['singer']):
+            return search_src['mid'], search_src['music_id'], True
     return None, 0, False
 
 
-def _compare(origin_singers: list, search_singers: list) -> bool:
-    if len(origin_singers) == 1:
-        if len(search_singers) == 1 and origin_singers[0] == search_singers[0]:
-            return True
-    elif len(origin_singers) == 2:
-        if len(search_singers) == 2:
-            if origin_singers[0] == search_singers[0] and origin_singers[1] == search_singers[1]:
-                return True
-        else:
-            return False
+def _compare_singer(origin_singers: list, search_singers: list) -> bool:
+    logger.error({
+        'type': 'singer',
+        'origin': '#'.join(origin_singers),
+        'search': '#'.join(search_singers),
+    })
+    if len(origin_singers) == len(search_singers) and len(origin_singers) <= 2:
+        return origin_singers == search_singers
     else:
         count = 0
         for singer in origin_singers:
@@ -124,3 +119,31 @@ def _compare(origin_singers: list, search_singers: list) -> bool:
         if count > 0 and count == len(origin_singers):
             return True
     return False
+
+
+def get_keywords(data: {}) -> list:
+    singers = [data['singer'], data['singer1'], data['singer2']]
+    result = []
+    try:
+        singers = list(filter(lambda x: x and len(x) > 0, singers))
+        if len(singers) == 2:
+            result = [
+                [data['beat_name'], singers[0], singers[1]],
+                [data['beat_name'], singers[1], singers[0]],
+            ]
+        else:
+            singers.insert(0, data['beat_name'])
+            result = [singers]
+    except Exception as e:
+        print(e, singers, data)
+    return result
+
+
+def parse_singer(data: list):
+    try:
+        return {
+            'beat_name': data[0],
+            'singer': data[1:],
+        }
+    except Exception as e:
+        print(e, data)

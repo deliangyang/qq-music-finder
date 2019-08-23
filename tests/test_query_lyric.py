@@ -1,7 +1,7 @@
 import unittest
 from spider.detail.lyric import find_content, query_lyric
 from spider.detail.info import query_info
-from spider.search.song_list import search, compare
+from spider.search.song_list import *
 import json
 
 
@@ -77,3 +77,14 @@ class TestCase(unittest.TestCase):
     def test_query_info(self):
         info = query_info('001rvKQX16P0mO')
         print(info)
+
+    def test_compare2(self):
+        data = {'beat_id': 1, 'beat_name': '屋顶', 'singer': '周杰伦', 'singer1': '温岚', 'singer2': ''}
+        for infos in get_keywords(data):
+            keyword = ' '.join(infos)
+            print(keyword)
+            search_result, ok = search(keyword)
+            if not ok:
+                continue
+            for items in search_result:
+                print(compare(items, parse_singer(infos)))

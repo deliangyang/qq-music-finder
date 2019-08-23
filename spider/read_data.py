@@ -1,4 +1,5 @@
 import xlrd
+from spider.reg import replace
 
 
 class ReadData(object):
@@ -10,12 +11,12 @@ class ReadData(object):
         self.worksheet = self.workbook.sheet_by_index(0)
 
     def iter(self):
-        for i in range(self.start_beat_id + 1, self.worksheet.nrows):
+        for i in range(self.start_beat_id, self.worksheet.nrows):
             record = self.worksheet.row_values(i)
             yield {
                 'beat_id': int(record[0]),
-                'beat_name': str(record[1]).replace('.0', '').lower().strip(),
-                'singer': str(record[2]).replace('.0', '').lower().strip(),
-                'singer1': str(record[3]).replace('.0', '').lower().strip(),
-                'singer2': str(record[4]).replace('.0', '').lower().strip(),
+                'beat_name': replace(record[1]),
+                'singer': replace(record[2]),
+                'singer1': replace(record[3]),
+                'singer2': replace(record[3]),
             }
