@@ -34,7 +34,11 @@ class ClawThread(threading.Thread):
                     'beat_id': data['beat_id'],
                 })
                 count = 0
-                for items in search(keyword):
+                search_result, ok = search(keyword)
+                if not ok:
+                    result = self.update_message(result, ERROR_MESSAGE_FORBIDDEN)
+                    continue
+                for items in search_result:
                     mid, music_id, ok = compare(items, data)
                     logger.debug({
                         'mid': mid,

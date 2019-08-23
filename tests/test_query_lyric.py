@@ -2,6 +2,7 @@ import unittest
 from spider.detail.lyric import find_content, query_lyric
 from spider.detail.info import query_info
 from spider.search.song_list import search, compare
+import json
 
 
 class TestCase(unittest.TestCase):
@@ -24,11 +25,11 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['lan'], '国语')
 
     def test_search(self):
-        result = search('草原夜歌 陈水林 洪禄云')
+        result = search('дорогой длинною 袁广泉')
         d = {
-            'beat_name': '草原夜歌',
-            'singer': '陈水林',
-            'singer1': '洪禄云',
+            'beat_name': 'дорогой длинною',
+            'singer': '袁广泉',
+            'singer1': '',
             'singer2': '',
         }
         print(result)
@@ -37,11 +38,12 @@ class TestCase(unittest.TestCase):
             print(t)
 
     def test_search2(self):
-        result = search('我的心太乱 周传雄')
+        result, _ = search('点烟 china blue 伍佰')
+        print(json.dumps(result))
         d = {
-            'beat_name': '我的心太乱',
-            'singer': '周传雄',
-            'singer1': '',
+            'beat_name': '点烟',
+            'singer': 'china blue',
+            'singer1': '伍佰',
             'singer2': '',
         }
         print(result)

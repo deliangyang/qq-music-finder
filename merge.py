@@ -10,7 +10,7 @@ def read_data(filename: str):
 
 
 if __name__ == '__main__':
-    filenames = ['dataxxx2.xlsx', 'dataxxx3.xlsx', ]
+    filenames = ['data/xxxxxxxx.xlsx', '123123123123xxxxxxsadasd.xlsx', ]
     new_workbook = openpyxl.Workbook()
     new_sheet = new_workbook.create_sheet('伴奏列表', 0)
 
@@ -18,6 +18,6 @@ if __name__ == '__main__':
         for item in read_data(fn):
             new_sheet.append(item)
 
-    new_workbook.save("伴奏列表1.xlsx")
+    new_workbook.save("伴奏列表2.xlsx")
 
 

@@ -1,8 +1,10 @@
 import requests
+import json
 from spider.header import headers
 from spider.utils.logger import logger
 from urllib.parse import urlencode
 from spider.error import with_error_stack
+from spider.error import ERROR_MESSAGE_FORBIDDEN
 
 params = {
     'ct': 24,
@@ -36,7 +38,7 @@ def get_params(keyword: str) -> {}:
     return params
 
 
-def search(keyword) -> list:
+def search(keyword) -> (list, bool):
     """
     查询 歌名和歌手相关信息
     :param keyword:
@@ -53,18 +55,26 @@ def search(keyword) -> list:
         logger.debug("keyword: %s, content: %", resp.content.decode('utf-8'))
         return []
     result = []
-    for item in content['data']['song']['list']:
-        data = {
-            'name': item['name'],
-            'singer': [],
-            'mid': item['mid'],
-            'music_id': item['id'],
-        }
-        for singer in item['singer']:
-            data['singer'].append(singer['name'])
-        result.append(data)
+
+    if 'message' in content and content['message'] == 'query forbid':
+        return [], False
+
+    try:
+        for item in content['data']['song']['list']:
+            data = {
+                'name': item['name'],
+                'singer': [],
+                'mid': item['mid'],
+                'music_id': item['id'],
+            }
+            for singer in item['singer']:
+                data['singer'].append(singer['name'])
+            result.append(data)
+    except Exception as e:
+        logger.error(with_error_stack(e))
+        return [], True
     logger.debug(result)
-    return result
+    return result, True
 
 
 def compare(search_src: {}, origin: {}) -> (str, int, bool):
@@ -81,7 +91,7 @@ def compare(search_src: {}, origin: {}) -> (str, int, bool):
     origin_singers = [origin['singer'], origin['singer1'], origin['singer2']]
     origin_singers = list(map(lambda x: str(x).lower().strip(), filter(lambda x: len(x) > 0, origin_singers)))
     search_src['singer'] = list(map(lambda x: str(x).lower().strip(), search_src['singer']))
-    if str(search_src['name']).replace(' ', '') == str(origin['beat_name']).replace(' ', ''):
+    if str(search_src['name']).replace(' ', '').lower() == str(origin['beat_name']).replace(' ', ''):
         count = 0
         for singer in origin_singers:
             for s in search_src['singer']:

@@ -6,5 +6,5 @@ def xx(message: str):
 
 
 if __name__ == '__main__':
-    runner = Runner("./data/伴奏列表.xlsx", 'test12312312313.xlsx', cb=xx, start=0, thread_num=5)
+    runner = Runner("./data/xxxxxxxx.xlsx", 'not_found.xlsx', cb=xx, start=0, thread_num=5)
     runner.start()

@@ -43,6 +43,7 @@ class Export(object):
         src = self.re_escape.sub('', ct).replace('""', '')
         print(src)
         src = src.replace('Cat\'t', 'Cat"t')
+        src = src.replace('\\"', '"')
         ll = len(src)
         new_src = ''
         start = 0
