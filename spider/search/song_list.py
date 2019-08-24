@@ -91,11 +91,11 @@ def compare(search_src: {}, origin: {}) -> (str, int, bool):
     search_src['singer'] = list(map(replace_tag, search_src['singer']))
     search_name = replace_tag(search_src['name'])
     beat_name = replace_tag(origin['beat_name'])
-    logger.error({
-        'type': 'name',
-        'origin': beat_name,
-        'search': search_name,
-    })
+    # logger.error({
+    #     'type': 'name',
+    #     'origin': beat_name,
+    #     'search': search_name,
+    # })
     if search_name == beat_name:
         if _compare_singer(origin['singer'], search_src['singer']):
             return search_src['mid'], search_src['music_id'], True
@@ -103,11 +103,11 @@ def compare(search_src: {}, origin: {}) -> (str, int, bool):
 
 
 def _compare_singer(origin_singers: list, search_singers: list) -> bool:
-    logger.error({
-        'type': 'singer',
-        'origin': '#'.join(origin_singers),
-        'search': '#'.join(search_singers),
-    })
+    # logger.error({
+    #     'type': 'singer',
+    #     'origin': '#'.join(origin_singers),
+    #     'search': '#'.join(search_singers),
+    # })
     if len(origin_singers) == len(search_singers) and len(origin_singers) <= 2:
         return origin_singers == search_singers
     else:

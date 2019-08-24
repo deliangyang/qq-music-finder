@@ -79,12 +79,24 @@ class TestCase(unittest.TestCase):
         print(info)
 
     def test_compare2(self):
-        data = {'beat_id': 1, 'beat_name': '屋顶', 'singer': '周杰伦', 'singer1': '温岚', 'singer2': ''}
+        data = {'beat_id': 1, 'beat_name': 'cheers', 'singer': 'rihanna', 'singer1': '', 'singer2': ''}
+        result = {}
+        print(get_keywords(data))
         for infos in get_keywords(data):
-            keyword = ' '.join(infos)
-            print(keyword)
-            search_result, ok = search(keyword)
+            search_result, ok = search(' '.join(infos))
+            print((' '.join(infos), search_result, ok))
             if not ok:
                 continue
             for items in search_result:
-                print(compare(items, parse_singer(infos)))
+                print(items)
+                mid, music_id, ok = compare(items, parse_singer(infos))
+                if not ok:
+                    continue
+                logger.info('=' * 20)
+                for k, v in query_info(mid).items():
+                    if k in result and len(result[k]) > 0:
+                        result[k] += '#' + v
+                    else:
+                        result[k] = v
+                break
+        print(result)

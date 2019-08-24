@@ -40,10 +40,10 @@ class Runner(threading.Thread):
 
             self.print_message("处理完毕，开始导出数据，请等待...")
 
-            export = Export()
-            export.export_data(logfile='query.log', filename=self.save_file)
-            self.print_message('处理完毕')
-            os.system("start explorer %s" % os.path.dirname(self.save_file))
+            # export = Export()
+            # export.export_data(logfile='query.log', filename=self.save_file)
+            # self.print_message('处理完毕')
+            # os.system("start explorer %s" % os.path.dirname(self.save_file))
         except Exception as e:
             self.print_message('处理失败: %s' % e)
             logger.error(with_error_stack(e))

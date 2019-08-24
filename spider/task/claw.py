@@ -45,8 +45,9 @@ class ClawThread(threading.Thread):
                     try:
                         for k, v in query_info(mid).items():
                             if k in result and len(result[k]) > 0:
-                                result[k] += '#'
-                            result[k] += v
+                                result[k] += '#' + v
+                            else:
+                                result[k] = v
                     except Exception as e:
                         logger.error(with_error_stack(e))
 
@@ -54,8 +55,9 @@ class ClawThread(threading.Thread):
                         try:
                             for k, v in query_lyric(mid, music_id).items():
                                 if k in result and len(result[k]) > 0:
-                                    result[k] += '#'
-                                result[k] += v
+                                    result[k] += '#' + v
+                                else:
+                                    result[k] = v
                         except Exception as e:
                             logger.error(with_error_stack(e))
 
